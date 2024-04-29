@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.itbank.repository.BoardDAO">
+	
+	<select id="selectList" resultType="board">
+		select * from board3 
+			order by 
+				isNotice 	desc, 
+				idx 		desc
+	</select>
+	
+	<select id="selectOne" resultType="board" parameterType="int">
+		select * from board3
+			where
+				idx = #{idx}
+	</select>
+	
+	<insert id="insert" parameterType="board">
+		insert into board3 (title, writer, content, isNotice)
+			values 
+				(#{title}, #{writer}, #{content}, #{isNotice})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete board3 where idx = #{idx}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
