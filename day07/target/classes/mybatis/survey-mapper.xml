@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.itbank.repository.SurveyDAO">
+	
+	<insert id="insert" parameterType="survey">
+		insert into survey (writer, title, option1, option2, image1, image2)
+			values (
+				#{writer},
+				#{title},
+				#{option1},
+				#{option2},
+				#{image1},
+				#{image2}
+			)
+	</insert>
+	
+	<select id="selectList" resultType="survey">
+		select 
+		    survey.*,
+		    (select count(*) from survey_choice where survey_idx = survey.idx) as responseCount
+		        from survey order by survey.idx desc
+	</select>
+	
+	<select id="selectOne" parameterType="int" resultType="survey">
+		select * from survey
+			where
+				idx = #{idx}
+	</select>
+	
+	<insert id="insertChoice" parameterType="choice">
+		insert into survey_choice (writer, survey_idx, choice) 
+			values (#{writer}, #{survey_idx}, #{choice})
+	</insert>
+	
+	<select id="selectResult" parameterType="int" resultType="survey">
+		select 
+		    A.*, 
+		    trunc(choice1Count * 100 / responseCount, 2) as choice1Rate, 
+		    trunc(choice2Count * 100 / responseCount, 2) as choice2Rate
+		    from (
+		    select 
+		    	S.*,
+		        (select count(*) from survey_choice where survey_idx = #{idx}) as responseCount,
+		        (select count(*) from survey_choice where survey_idx = #{idx} and choice = 1) as choice1Count,    
+		        (select count(*) from survey_choice where survey_idx = #{idx} and choice = 2) as choice2Count
+		            from survey S
+		            where S.idx = #{idx}
+		    ) A
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
